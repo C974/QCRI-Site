@@ -50,7 +50,7 @@ class ScholarsRepo {
             return { error: error.message };
         }
     }
-    
+
 
 
     async getScholarByCountry(country) {
@@ -148,9 +148,46 @@ class ScholarsRepo {
     }
 
 
+    //get advisor by scholar name 
 
+    async getAdvisorByScholarName(name) {
+        try {
+            return prisma.people2.findMany({
+                where: {
+                    name: {
+                        contains: name
+                    }
+                },
+                select: {
+                    advisors: true
+                }
+            })
+        } catch (error) {
+            return { error: error.message }
+        }
+    }
 
+    //get id by name 
 
+    async getScholarIdByName(name) {
+        try {
+            return prisma.people2.findMany({
+                where: {
+                    name: {
+                        contains: name
+                    }
+                },
+                select: {
+                    id: true
+                }
+            })
+        } catch (error) {
+            return { error: error.message }
+        }
+    }
+
+    
+      
     async createScholar(people2) {
         try {
             return prisma.people2.create({

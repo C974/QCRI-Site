@@ -1,4 +1,4 @@
-import LocationRepo from "C:/Users/gigia/Desktop/QCRI-Site/my-next-app/app/repo/location-repo.js";    
+import LocationRepo from "D:/GItHub/QCRI-Site/QCRI-Site/app/repo/location-repo.js";
 
 export async function GET(request, { params }) {
     const country = params.country;

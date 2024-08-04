@@ -3,7 +3,7 @@ import ScholarsRepo from "D:/GItHub/QCRI-Site/QCRI-Site/app/repo/scholars-repo.j
 
 export async function GET(request, { params }) {
     const name = params.name;
-    const scholar = await ScholarsRepo.getScholarName2(name);
+    const scholar = await ScholarsRepo.getScholarIdByName(name);
     return Response.json(scholar, { status: 200 });
 
 }

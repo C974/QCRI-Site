@@ -1,30 +1,192 @@
+// 'use client';
+// import React, { useState } from 'react';
+// import styles from 'D:/GItHub/QCRI-Site/QCRI-Site/app/page.module.css';
+
+// export function Top({ onSearch }) {
+//     const [searchValue1, setSearchValue1] = useState('');
+//     const [searchValue2, setSearchValue2] = useState('');
+
+//     const handleInputChange1 = (event) => {
+//         setSearchValue1(event.target.value);
+//         console.log('Input 1:', event.target.value); // Debug
+//     };
+
+//     const handleInputChange2 = (event) => {
+//         setSearchValue2(event.target.value);
+//         console.log('Input 2:', event.target.value); // Debug
+//     };
+
+//     const handleSearchClick = async () => {
+//         try {
+//             const fetchData = async (searchValue) => {
+//                 const scholarResponse = await fetch(`http://localhost:3000/api/scholar/scholarName/${searchValue}`);
+//                 const scholarData = await scholarResponse.json();
+//                 console.log('Scholar Data:', scholarData);
+
+//                 const country = scholarData.country || scholarData[0]?.country;
+//                 console.log('Country:', country);
+
+//                 if (!country) {
+//                     console.error('Country not found in scholar data');
+//                     return null;
+//                 }
+
+//                 const countryResponse = await fetch(`http://localhost:3000/api/country/${country}`);
+//                 const countryData = await countryResponse.json();
+//                 console.log('Country Data:', countryData);
+
+//                 const { latitude, longitude } = countryData;
+
+//                 return { latitude, longitude };
+//             };
+
+//             const point1 = await fetchData(searchValue1);
+//             const point2 = await fetchData(searchValue2);
+
+//             if (point1 && point2) {
+//                 onSearch([point1, point2]);
+//             }
+//         } catch (error) {
+//             console.error('Error:', error);
+//         }
+//     };
+
+//     return (
+//         <header>
+//             <div className={styles.topNav}>
+//                 <button id="menu-btn" className={styles.menuIcon}>&#9776;</button>
+//                 <nav className={styles.rightNav}>
+//                     <div className='text'>
+//                         <a href="home.html">Home</a>
+//                         <a href="scientist-details.html">Scientists</a>
+//                         <a href="about-us.html">About Us</a>
+//                     </div>
+//                 </nav>
+//                 <div className={styles.searchContainer}>
+//                     <input
+//                         type="text"
+//                         id="search-bar1"
+//                         placeholder="Enter the first scholar's name"
+//                         value={searchValue1}
+//                         onChange={handleInputChange1}
+//                     />
+//                     <input
+//                         type="text"
+//                         id="search-bar2"
+//                         placeholder="Enter the second scholar's name"
+//                         value={searchValue2}
+//                         onChange={handleInputChange2}
+//                     />
+//                     <button
+//                         id="search-btn"
+//                         onClick={handleSearchClick}
+//                     >
+//                         Search
+//                     </button>
+//                 </div>
+//             </div>
+//         </header>
+//     );
+// }
+
+// export default Top;
+
 'use client';
 import React, { useState } from 'react';
-import styles from 'C:/Users/gigia/Desktop/QCRI-Site/my-next-app/app/page.module.css';
+import styles from 'D:/GItHub/QCRI-Site/QCRI-Site/app/page.module.css';
 
 export function Top({ onSearch }) {
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue1, setSearchValue1] = useState('');
+    const [searchValue2, setSearchValue2] = useState('');
 
-    const handleInputChange = (event) => {
-        setSearchValue(event.target.value);
+    const handleInputChange1 = (event) => {
+        setSearchValue1(event.target.value);
+        console.log('Input 1:', event.target.value); // Debug
+    };
+
+    const handleInputChange2 = (event) => {
+        setSearchValue2(event.target.value);
+        console.log('Input 2:', event.target.value); // Debug
+    };
+
+    const checkConnection = async (scholar1, scholar2) => {
+        try {
+            const advisorResponse1 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar1}/Advisor`);
+            const advisorData1 = await advisorResponse1.json();
+            // const country = scholarData.country || scholarData[0]?.country;
+            console.log('Advisor Data 1:', advisorData1);
+            const advisor1 = advisorData1.advisor || advisorData1[0]?.advisors;
+            console.log('Advisor 1:', advisor1);
+
+            const advisorResponse2 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar2}/Advisor`);
+            const advisorData2 = await advisorResponse2.json();
+            console.log('Advisor Data 2:', advisorData2);
+            const advisor2 = advisorData2.advisor || advisorData2[0]?.advisors;
+            console.log('Advisor 2:', advisor2);
+        
+            if (advisor1 === advisor2) {
+                return 'RED';  // Same advisor
+            }
+
+            // Fetch node IDs for the scholars
+            const idResponse1 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar1}/id`);
+            const idData1 = await idResponse1.json();
+            const nodeId1 = idData1.id;
+
+            const idResponse2 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar2}/id`);
+            const idData2 = await idResponse2.json();
+            const nodeId2 = idData2.id;
+
+            // Fetch island data from the server
+            const islandsResponse = await fetch(`http://localhost:3000/api/islands?islands=data`);
+            const islandsData = await islandsResponse.json();
+            console.log('Islands Data:', islandsData);
+
+            for (const island of islandsData.islands_details) {
+                if (island.nodes.includes(nodeId1) && island.nodes.includes(nodeId2)) {
+                    return 'GREEN';  // Same island
+                }
+            }
+
+            return 'NO CONNECTION';  // No connection found
+        } catch (error) {
+            console.error('Error checking connection:', error);
+            return 'ERROR';
+        }
     };
 
     const handleSearchClick = async () => {
         try {
-            const scholarResponse = await fetch(`http://localhost:3001/api/scholar/scholarName/${searchValue}`);
-            const scholarData = await scholarResponse.json();
-            if (scholarData.length > 0) {
-                const country = scholarData[0].country;
+            const fetchData = async (searchValue) => {
+                const scholarResponse = await fetch(`http://localhost:3000/api/scholar/scholarName/${searchValue}`);
+                const scholarData = await scholarResponse.json();
+                console.log('Scholar Data:', scholarData);
 
-                console.log(country); // This will print the country name directly
+                const country = scholarData.country || scholarData[0]?.country;
+                console.log('Country:', country);
 
-                const countryResponse = await fetch(`http://localhost:3001/api/country/${country}`);
+                if (!country) {
+                    console.error('Country not found in scholar data');
+                    return null;
+                }
+
+                const countryResponse = await fetch(`http://localhost:3000/api/country/${country}`);
                 const countryData = await countryResponse.json();
+                console.log('Country Data:', countryData);
+
                 const { latitude, longitude } = countryData;
 
-                onSearch({ latitude, longitude });
-            } else {
-                console.error('No scholar data found');
+                return { latitude, longitude };
+            };
+
+            const point1 = await fetchData(searchValue1);
+            const point2 = await fetchData(searchValue2);
+
+            if (point1 && point2) {
+                onSearch([point1, point2]);
+
+                const connectionColor = await checkConnection(searchValue1, searchValue2);
+                console.log(`Connection color: ${connectionColor}`);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -45,10 +207,17 @@ export function Top({ onSearch }) {
                 <div className={styles.searchContainer}>
                     <input
                         type="text"
-                        id="search-bar"
-                        placeholder="Search..."
-                        value={searchValue}
-                        onChange={handleInputChange}
+                        id="search-bar1"
+                        placeholder="Enter the first scholar's name"
+                        value={searchValue1}
+                        onChange={handleInputChange1}
+                    />
+                    <input
+                        type="text"
+                        id="search-bar2"
+                        placeholder="Enter the second scholar's name"
+                        value={searchValue2}
+                        onChange={handleInputChange2}
                     />
                     <button
                         id="search-btn"

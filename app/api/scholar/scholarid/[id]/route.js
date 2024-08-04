@@ -1,4 +1,4 @@
-import ScholarsRepo from "C:/Users/gigia/Desktop/QCRI-Site/my-next-app/app/repo/scholars-repo.js";    
+import ScholarsRepo from "../app/repo/scholars-repo.js";    
 
 import { PrismaClient } from '@prisma/client';
 

@@ -58,6 +58,35 @@ async function main() {
         }
       }
 
+
+
+      const countrypath = path.join(process.cwd(), 'D:/GItHub/QCRI-Site/QCRI-Site/app/data/country.json');
+
+      async function main1() {
+        try {
+          const countries = await fs.readJSON(countrypath);
+          console.log(countries);
+          for (const country of countries) {
+            await prisma.country.create({
+              data: country,
+            });
+          }
+          console.log('Database seeding complete');
+        } catch (error) {
+          console.error('Error during seeding:', error);
+        } finally {
+          await prisma.$disconnect();
+        }
+      }
+
+      main1()
+        .catch((e) => {
+          console.error(e);
+          process.exit(1);
+        });
+
+
+
       console.log('Seeding finished.');
       await prisma.$disconnect();
     });
