@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+model people2 {
+  id              Int     @id
+  name            String?
+  url             String?
+  year            String?
+  univ            String?
+  gradlevel       String?
+  country         String?
+  dissertation    String?
+  students        String?
+  advisors        String?
+  webcontent      String?
+  otherurl        String?
+  imageurls       String?
+  wikicontent     String?
+  wikiurls        Json?
+  languagelinks   Json?
+  wikiconnections Json?
+}
+
+// {
+//       "country" : "American Samoa",
+//       "alpha2" : "AS",
+//       "alpha3" : "ASM",
+//       "numeric" : 16,
+//       "latitude" : -14.3333,
+//       "longitude" : -170
+//     }
+
+model country {
+  country   String @id
+  alpha2    String
+  alpha3    String
+  numeric   Float
+  latitude  Float
+  longitude Float
+}
