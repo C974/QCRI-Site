@@ -111,43 +111,38 @@ export function Top({ onSearch }) {
 
     const checkConnection = async (scholar1, scholar2) => {
         try {
-            const advisorResponse1 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar1}/Advisor`);
-            const advisorData1 = await advisorResponse1.json();
-            // const country = scholarData.country || scholarData[0]?.country;
-            console.log('Advisor Data 1:', advisorData1);
-            const advisor1 = advisorData1.advisor || advisorData1[0]?.advisors;
-            console.log('Advisor 1:', advisor1);
+            // const advisorResponse1 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar1}/Advisor`);
+            // const advisorData1 = await advisorResponse1.json();
+            // // const country = scholarData.country || scholarData[0]?.country;
+            // console.log('Advisor Data 1:', advisorData1);
+            // const advisor1 = advisorData1.advisor || advisorData1[0]?.advisors;
+            // console.log('Advisor 1:', advisor1);
 
-            const advisorResponse2 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar2}/Advisor`);
-            const advisorData2 = await advisorResponse2.json();
-            console.log('Advisor Data 2:', advisorData2);
-            const advisor2 = advisorData2.advisor || advisorData2[0]?.advisors;
-            console.log('Advisor 2:', advisor2);
+            // const advisorResponse2 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar2}/Advisor`);
+            // const advisorData2 = await advisorResponse2.json();
+            // console.log('Advisor Data 2:', advisorData2);
+            // const advisor2 = advisorData2.advisor || advisorData2[0]?.advisors;
+            // console.log('Advisor 2:', advisor2);
         
-            if (advisor1 === advisor2) {
-                return 'RED';  // Same advisor
-            }
+            // if (advisor1 === advisor2) {
+            //     return 'RED';  // Same advisor
+            // }
+            
 
             // Fetch node IDs for the scholars
             const idResponse1 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar1}/id`);
             const idData1 = await idResponse1.json();
-            const nodeId1 = idData1.id;
+            console.log('ID Data 1:', idData1);
+            const nodeId1 = idData1.id || idData1[0]?.id;
+            console.log('Node ID 1:', nodeId1);
 
             const idResponse2 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar2}/id`);
             const idData2 = await idResponse2.json();
-            const nodeId2 = idData2.id;
+            console.log('ID Data 2:', idData2);
+            const nodeId2 = idData2.id|| idData2[0]?.id;
+            console.log('Node ID 2:', nodeId2);
 
-            // Fetch island data from the server
-            const islandsResponse = await fetch(`http://localhost:3000/api/islands?islands=data`);
-            const islandsData = await islandsResponse.json();
-            console.log('Islands Data:', islandsData);
-
-            for (const island of islandsData.islands_details) {
-                if (island.nodes.includes(nodeId1) && island.nodes.includes(nodeId2)) {
-                    return 'GREEN';  // Same island
-                }
-            }
-
+            
             return 'NO CONNECTION';  // No connection found
         } catch (error) {
             console.error('Error checking connection:', error);

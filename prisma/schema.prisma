@@ -47,3 +47,11 @@ model country {
   latitude  Float
   longitude Float
 }
+model Island {
+  id           Int      @id @default(autoincrement())
+  islandNumber Int
+  startYear    Int?
+  endYear      Int?
+  node      String[]
+}
+

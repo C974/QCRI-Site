@@ -79,3 +79,108 @@
 #search-btn:hover {
   background-color: #ddd;
 }
+
+
+
+
+
+
+
+
+/* Navbar */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  padding: 10px;
+}
+
+.menu-icon {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.right-nav a {
+  color: #fff;
+  text-decoration: none;
+  padding: 0 15px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+#search-bar {
+  padding: 5px;
+  margin-right: 5px;
+}
+
+/* Footer */
+.footer-container {
+  display: flex;
+  justify-content: space-around;
+  background-color: #333;
+  color: #fff;
+  padding: 20px 0;
+}
+
+.footer-column h3 {
+  margin-bottom: 10px;
+}
+
+.footer-column a {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Main Styles */
+.wrapper {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-container {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-placeholder img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+
+.profile-info {
+  margin-left: 20px;
+}
+
+.students-container {
+  margin-top: 30px;
+}
+
+.students-navigation {
+  display: flex;
+  align-items: center;
+}
+
+#students-list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0 20px;
+}
+
+#students-list li {
+  margin: 0 10px;
+}
