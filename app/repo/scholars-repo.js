@@ -2,13 +2,16 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 class ScholarsRepo {
-    async getscholars() {
-        try {
-            return prisma.people2.findMany()
-        } catch (error) {
-            return { error: error.message }
-        }
+   async getScholars() {
+    try {
+        return prisma.people2.findMany({
+            orderBy: { id: 'asc' }, 
+            take:100
+    });
+    } catch (error) {
+        return { error: error.message };
     }
+}
     async getScholar(id) {
         try {
             return prisma.people2.findUnique({
@@ -186,8 +189,8 @@ class ScholarsRepo {
         }
     }
 
-    
-      
+
+
     async createScholar(people2) {
         try {
             return prisma.people2.create({

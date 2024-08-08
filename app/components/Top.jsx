@@ -1,6 +1,8 @@
+
 // 'use client';
 // import React, { useState } from 'react';
 // import styles from 'D:/GItHub/QCRI-Site/QCRI-Site/app/page.module.css';
+// import Link from 'next/link';
 
 // export function Top({ onSearch }) {
 //     const [searchValue1, setSearchValue1] = useState('');
@@ -14,6 +16,67 @@
 //     const handleInputChange2 = (event) => {
 //         setSearchValue2(event.target.value);
 //         console.log('Input 2:', event.target.value); // Debug
+//     };
+
+//     const checkConnection = async (scholar1, scholar2) => {
+//         try {
+//             const advisorResponse1 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar1}/Advisor`);
+//             const advisorData1 = await advisorResponse1.json();
+//             // const country = scholarData.country || scholarData[0]?.country;
+//             console.log('Advisor Data 1:', advisorData1);
+//             const advisor1 = advisorData1.advisor || advisorData1[0]?.advisors;
+//             console.log('Advisor 1:', advisor1);
+
+//             const advisorResponse2 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar2}/Advisor`);
+//             const advisorData2 = await advisorResponse2.json();
+//             console.log('Advisor Data 2:', advisorData2);
+//             const advisor2 = advisorData2.advisor || advisorData2[0]?.advisors;
+//             console.log('Advisor 2:', advisor2);
+        
+//             if (advisor1 === advisor2) {
+//                 return 'RED';  // Same advisor
+//             }
+
+//             else{
+
+//                   // Fetch node IDs for the scholars
+//             const idResponse1 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar1}/id`);
+//             const idData1 = await idResponse1.json();
+//             console.log('ID Data 1:', idData1);
+//             const nodeId1 = idData1.id || idData1[0]?.id;
+//             console.log('Node ID 1:', nodeId1);
+
+//             const idResponse2 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar2}/id`);
+//             const idData2 = await idResponse2.json();
+//             console.log('ID Data 2:', idData2);
+//             const nodeId2 = idData2.id|| idData2[0]?.id;
+//             console.log('Node ID 2:', nodeId2);
+
+//             const conn=await fetch(`http://localhost:3000/api/islands/${nodeId1}/${nodeId2}`);
+//             const output = await conn.json();
+//             console.log('output', output);
+            
+//             const checkArray = output.check;  // Accessing the array inside the 'check' property
+//             console.log(checkArray.length);  // Check the length of the array
+            
+//             if (checkArray.length > 1) {
+//                 console.log('No Connection'); 
+//             } else {
+//                 console.log('Indirect Connection');
+//             }
+            
+
+
+//             }
+            
+
+          
+            
+//             return '';  // No connection found
+//         } catch (error) {
+//             console.error('Error checking connection:', error);
+//             return 'ERROR';
+//         }
 //     };
 
 //     const handleSearchClick = async () => {
@@ -45,6 +108,9 @@
 
 //             if (point1 && point2) {
 //                 onSearch([point1, point2]);
+
+//                 const connectionColor = await checkConnection(searchValue1, searchValue2);
+//                 console.log(`Connection color: ${connectionColor}`);
 //             }
 //         } catch (error) {
 //             console.error('Error:', error);
@@ -58,8 +124,8 @@
 //                 <nav className={styles.rightNav}>
 //                     <div className='text'>
 //                         <a href="home.html">Home</a>
-//                         <a href="scientist-details.html">Scientists</a>
-//                         <a href="about-us.html">About Us</a>
+//                         <Link href="/exterma">Scientists</Link>
+//                         <Link href="/aboutus">About Us</Link>
 //                     </div>
 //                 </nav>
 //                 <div className={styles.searchContainer}>
@@ -91,9 +157,11 @@
 
 // export default Top;
 
+
 'use client';
 import React, { useState } from 'react';
 import styles from 'D:/GItHub/QCRI-Site/QCRI-Site/app/page.module.css';
+import Link from 'next/link';
 
 export function Top({ onSearch }) {
     const [searchValue1, setSearchValue1] = useState('');
@@ -111,23 +179,21 @@ export function Top({ onSearch }) {
 
     const checkConnection = async (scholar1, scholar2) => {
         try {
-            // const advisorResponse1 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar1}/Advisor`);
-            // const advisorData1 = await advisorResponse1.json();
-            // // const country = scholarData.country || scholarData[0]?.country;
-            // console.log('Advisor Data 1:', advisorData1);
-            // const advisor1 = advisorData1.advisor || advisorData1[0]?.advisors;
-            // console.log('Advisor 1:', advisor1);
+            const advisorResponse1 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar1}/Advisor`);
+            const advisorData1 = await advisorResponse1.json();
+            console.log('Advisor Data 1:', advisorData1);
+            const advisor1 = advisorData1.advisor || advisorData1[0]?.advisors;
+            console.log('Advisor 1:', advisor1);
 
-            // const advisorResponse2 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar2}/Advisor`);
-            // const advisorData2 = await advisorResponse2.json();
-            // console.log('Advisor Data 2:', advisorData2);
-            // const advisor2 = advisorData2.advisor || advisorData2[0]?.advisors;
-            // console.log('Advisor 2:', advisor2);
-        
-            // if (advisor1 === advisor2) {
-            //     return 'RED';  // Same advisor
-            // }
-            
+            const advisorResponse2 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar2}/Advisor`);
+            const advisorData2 = await advisorResponse2.json();
+            console.log('Advisor Data 2:', advisorData2);
+            const advisor2 = advisorData2.advisor || advisorData2[0]?.advisors;
+            console.log('Advisor 2:', advisor2);
+
+            if (advisor1 === advisor2) {
+                return 'RED';  // Same advisor
+            }
 
             // Fetch node IDs for the scholars
             const idResponse1 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar1}/id`);
@@ -139,11 +205,22 @@ export function Top({ onSearch }) {
             const idResponse2 = await fetch(`http://localhost:3000/api/scholar/scholarName/${scholar2}/id`);
             const idData2 = await idResponse2.json();
             console.log('ID Data 2:', idData2);
-            const nodeId2 = idData2.id|| idData2[0]?.id;
+            const nodeId2 = idData2.id || idData2[0]?.id;
             console.log('Node ID 2:', nodeId2);
 
-            
-            return 'NO CONNECTION';  // No connection found
+            const conn = await fetch(`http://localhost:3000/api/islands/${nodeId1}/${nodeId2}`);
+            const output = await conn.json();
+            console.log('output', output);
+
+            const checkArray = output.check;  // Accessing the array inside the 'check' property
+            console.log(checkArray.length);  // Check the length of the array
+
+            if (checkArray.length > 1) {
+                return 'NO CONNECTION';  // Indirect connection
+            } else {
+                return 'INDIRECT';  // Direct connection
+            }
+
         } catch (error) {
             console.error('Error checking connection:', error);
             return 'ERROR';
@@ -178,10 +255,9 @@ export function Top({ onSearch }) {
             const point2 = await fetchData(searchValue2);
 
             if (point1 && point2) {
-                onSearch([point1, point2]);
-
-                const connectionColor = await checkConnection(searchValue1, searchValue2);
-                console.log(`Connection color: ${connectionColor}`);
+                const connectionType = await checkConnection(searchValue1, searchValue2);
+                console.log(`Connection type: ${connectionType}`);
+                onSearch([point1, point2, connectionType]);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -195,8 +271,8 @@ export function Top({ onSearch }) {
                 <nav className={styles.rightNav}>
                     <div className='text'>
                         <a href="home.html">Home</a>
-                        <a href="scientist-details.html">Scientists</a>
-                        <a href="about-us.html">About Us</a>
+                        <Link href="/scientists">Scientists</Link>
+                        <Link href="/aboutus">About Us</Link>
                     </div>
                 </nav>
                 <div className={styles.searchContainer}>

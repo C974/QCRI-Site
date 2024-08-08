@@ -6,7 +6,7 @@ class IslandRepo {
 
     async checkNodesPresent(id1, id2) {
         try {
-            return prisma.islands.findMany({
+            return prisma.island.findMany({
                 where: {
                     node: {
                         hasSome: [id1, id2] // Adjust based on your actual schema

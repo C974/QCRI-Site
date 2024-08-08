@@ -13,6 +13,8 @@ const Footer = () => {
           <div className="footer-column">
             <h3>Contact Us</h3>
             <a href="/contact-us">Read more</a>
+
+            
           </div>
         </div>
       </footer>

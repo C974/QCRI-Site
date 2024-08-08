@@ -1,9 +1,9 @@
-import ScholarsRepo from "@/app/repo/scholars-repo.js";
 import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import ScholarsRepo from "D:/GItHub/QCRI-Site/QCRI-Site/app/repo/scholars-repo.js";
+
 
 export async function GET(request) {
-    const scholar = await ScholarsRepo.getscholars();
+    const scholar = await ScholarsRepo.getScholars();
     return Response.json(scholar, { status: 200 });
 
 }
@@ -15,3 +15,4 @@ export async function POST(request) {
 
     return Response.json(scholar, { status: 200 });
 }
+

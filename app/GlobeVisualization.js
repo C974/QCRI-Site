@@ -1,30 +1,23 @@
-// 'use client';
 
+// 'use client';
 // import React, { useEffect, useState } from 'react';
 // import Globe from 'react-globe.gl';
 
-// const GlobeVisualization = ({ newPoint }) => {
+
+// const GlobeVisualization = ({ points }) => {
 //   const [globeData, setGlobeData] = useState([]);
-//   const [arcsData, setArcsData] = useState([]);
 
 //   useEffect(() => {
-//     if (newPoint) {
-//       const point = { lat: newPoint.latitude, lng: newPoint.longitude, size: 0.2, color: 'green' };
-//       setGlobeData([...globeData, point]);
-
-//       if (globeData.length > 0) {
-//         const lastPoint = globeData[globeData.length - 1];
-//         const arc = {
-//           startLat: lastPoint.lat,
-//           startLng: lastPoint.lng,
-//           endLat: newPoint.latitude,
-//           endLng: newPoint.longitude,
-//           color: ['red', 'blue'],
-//         };
-//         setArcsData([...arcsData, arc]);
-//       }
+//     if (points.length) {
+//       const newPoints = points.map(point => ({
+//         lat: point.latitude,
+//         lng: point.longitude,
+//         size: 0.2,
+//         color: 'green'
+//       }));
+//       setGlobeData([...globeData, ...newPoints]);
 //     }
-//   }, [newPoint]);
+//   }, [points]);
 
 //   const myData = [
 //     { lat: 28.7128, lng: 84.0060, size: 0.2, color: 'red' },
@@ -35,12 +28,6 @@
 //     <Globe
 //       globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
 //       pointsData={[...myData, ...globeData]}
-//       arcsData={arcsData}
-//       arcColor={'color'}
-//       arcDashLength={0.5}
-//       arcDashGap={4}
-//       arcDashInitialGap={() => Math.random()}
-//       arcDashAnimateTime={2000}
 //       backgroundColor="#000000"
 //     />
 //   );
@@ -48,16 +35,17 @@
 
 // export default GlobeVisualization;
 
-
-
 'use client';
 import React, { useEffect, useState } from 'react';
 import Globe from 'react-globe.gl';
 
-const GlobeVisualization = ({ points }) => {
+const GlobeVisualization = ({ points, connectionType }) => {
   const [globeData, setGlobeData] = useState([]);
+  const [arcsData, setArcsData] = useState([]);
 
   useEffect(() => {
+    console.log('connection globe type hello', connectionType);
+
     if (points.length) {
       const newPoints = points.map(point => ({
         lat: point.latitude,
@@ -66,19 +54,34 @@ const GlobeVisualization = ({ points }) => {
         color: 'green'
       }));
       setGlobeData([...globeData, ...newPoints]);
-    }
-  }, [points]);
 
-  const myData = [
-    { lat: 28.7128, lng: 84.0060, size: 0.2, color: 'red' },
-    { lat: 25.5074, lng: 51.1278, size: 0.15, color: 'blue' },
-  ];
+      if (points.length >= 2) {
+        const arc = {
+
+          startLat: points[0].latitude,
+          startLng: points[0].longitude,
+          endLat: points[1].latitude,
+          endLng: points[1].longitude,
+          color: connectionType === 'RED' ? 'red' : connectionType === 'INDIRECT' ? 'blue' : 'gray',
+          dashArray: connectionType === 'INDIRECT' ? [5, 5] : null
+        };
+        setArcsData([...arcsData, arc]);
+      }
+    }
+  }, [points, connectionType]);
 
   return (
     <Globe
       globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
-      pointsData={[...myData, ...globeData]}
+      pointsData={globeData}
+      arcsData={arcsData}
+      arcColor={'color'}
+      arcDashLength={0.5}
+      arcDashGap={4}
+      arcDashInitialGap={() => Math.random()}
+      arcDashAnimateTime={450}
       backgroundColor="#000000"
+      arcStroke={2}
     />
   );
 };
