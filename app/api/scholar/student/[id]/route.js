@@ -4,6 +4,5 @@ import ScholarsRepo from "D:/GItHub/QCRI-Site/QCRI-Site/app/repo/scholars-repo.j
 export async function GET(request,{params}) {
     const scholar = await ScholarsRepo.getStudentNameById(params.id);
     return Response.json(scholar, { status: 200 });
-
  
 }
