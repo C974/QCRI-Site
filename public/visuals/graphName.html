@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Section Page</title>
+    <link rel="stylesheet" href="home.css">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .styled-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: center;
+        }   
+        .styled-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .styled-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .styled-section input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 80%;
+            margin-bottom: 20px;
+        }
+
+        .styled-section button {
+            padding: 10px 80px;
+            border: none;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .styled-section button:hover {
+            background-color: #555;
+        }
+
+        .styled-section p {
+            margin-top: 20px;
+            color: #555;
+        }
+
+        #test2 {
+            border: 1px solid black; /* Adjust border as needed for visibility */
+            margin: 20px 0; /* Add some spacing */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>test file</h1>
+        </header>
+        <main>
+            <section id="section1" class="styled-section">
+                <div style="text-align: center;">
+                    <h2>Section 1</h2>
+                    <label for="name">ENTER THE NAME:</label>
+                    <input type="text" id="name">
+                    <br><br>
+                    <label for="num-generations">ENTER THE NUMBER OF GENERATIONS:</label>
+                    <input type="text" id="num-generations">
+                    <div id="test2">
+                        <button onclick="displayGraph()">Display Graph</button>
+                    </div>
+                    <p class="first">This is the first section of the body.</p>
+                </div>
+            </section>
+            <section id="section2" class="styled-section">
+                <h2>STATISTICS</h2>
+                <p>The number of islands in the website is: <span id="num-islands"></span></p>
+                <button onclick="displayIslandDetails()">Display island details</button>
+                <div id="test"></div>
+                <button onclick="hideIslandDetails()" style="display: none;" id="hide-button">Hide island details</button>
+                <p>The average island length: <span id="average_length"> </span></p>
+                <p>The median island length: <span id="median_length"> </span></p>
+                <p>The network density of the overall genealogy graph: <span id="density"></span></p>
+                <p>Number of nodes: <span id="nodes"></span></p>
+                <p>Number of edges: <span id="edges"></span></p>
+                <p>Island number with the greatest path: with starting node number: <span id="Top"></span></p>
+                <p>Island number with shortest path: with starting node number: <span id="Lowest"></span></p>
+                <h3>Top 10 nodes by PageRank:</h3>
+                <p>Influence metrics to identify the most influential mathematicians.</p>
+                <ul id="top-nodes"></ul>
+                <div id="island-details"></div>
+                <div id="graph"></div>
+                <h3>Island Start and End Years</h3>
+                <img src="static/island_years.png" alt="Island Start and End Years">
+                <h3>Number of Islands by Length Range</h3>
+                <img src="static/island_lengths.png" alt="Number of Islands by Length Range">
+            </section>
+        </main>
+        <footer>
+            <p>Footer Section</p>
+        </footer>
+    </div>
+    <script src="graphName.js"></script>
+    <script>
+        fetch('static/num_islands.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('num-islands').textContent = data.num_islands;
+                document.getElementById('average_length').textContent = data.average_length;
+                document.getElementById('median_length').textContent = data.median_length;
+                document.getElementById('density').textContent = data.network_density ;
+                document.getElementById('nodes').textContent = data.number_of_nodes ;
+                document.getElementById('edges').textContent = data.number_of_edges;
+                document.getElementById('Top').textContent = data.longest_island_number ;
+                document.getElementById('Lowest').textContent = data.shortest_island_number ;
+                // Display Top 10 nodes by PageRank
+                const topNodesList = document.getElementById('top-nodes');
+                
+                data.top_pagerank.forEach(node => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Node ${node[0]}: ${node[1]}`;
+                    topNodesList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching num_islands:', error));
+
+        function displayIslandDetails() {
+            fetch('static/num_islands.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const islandDetailsDiv = document.getElementById('island-details');
+                    islandDetailsDiv.innerHTML = ''; // Clear previous details
+                    data.islands_details.forEach(island => {
+                        const islandDetail = document.createElement('div');
+                        islandDetail.innerHTML = `
+                            <h3>Island ${island.island_number}</h3>
+                            <p>Nodes: ${island.nodes.join(', ')}</p>
+                            <p>Start Year: ${island.start_year}</p>
+                            <p>End Year: ${island.end_year}</p>
+                        `;
+                        islandDetailsDiv.appendChild(islandDetail);
+                    });
+                    document.getElementById('hide-button').style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching island details:', error));
+        }
+
+        function hideIslandDetails() {
+            const islandDetailsDiv = document.getElementById('island-details');
+            islandDetailsDiv.innerHTML = '';  
+            document.getElementById('hide-button').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@prisma/client": "^5.17.0",
+    "@react-three/drei": "^9.109.5",
+    "@react-three/fiber": "^8.17.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dotenv": "^10.0.0",

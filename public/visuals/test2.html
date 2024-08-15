@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetworkX</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(to right, #155893, #112a52);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow: auto; /* Prevent scrolling */
+            position: relative; /* Ensure the canvas stays in the background */
+        }
+
+        .wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            z-index: 1; /* Ensure the wrapper content is above the canvas */
+        }
+
+        #stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Canvas is in the background */
+        }
+
+        header {
+            background-color: #f1f1f1;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 2; /* Ensure header is above the canvas */
+        }
+
+        .top-nav {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .top-nav .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .right-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .right-nav a {
+            margin-left: 20px;
+            text-decoration: none;
+            font-size: 16px;
+            color: black;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .right-nav a:hover {
+            background-color: #ddd;
+            color: #333;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+
+        #search-bar {
+            padding: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+        }
+
+        #search-btn {
+            padding: 5px 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-left: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            background-color: #333;
+            color: white;
+        }
+
+        #search-btn:hover {
+            background-color: #333;
+        }
+
+        .side-nav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 200px; /* Adjust this value to move the links lower */
+        }
+
+        .side-nav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 20px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .side-nav a:hover {
+            color: #f1f1f1;
+        }
+
+        .side-nav .close-btn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        .main-content {
+            padding: 20px;
+            flex: 1;
+            text-align: center;
+        }
+
+        .scene-container .clickable {
+            cursor: pointer;
+        }
+
+        #globe-container {
+            width: 100%;
+            height: 500px; /* Adjust height as needed */
+            margin: 20px 0;
+            position: relative;
+            z-index: 1; /* Ensure the globe is visible */
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 1px 10px;
+            text-align: center;
+            position: relative;
+            width: 100%;
+            z-index: 2; /* Ensure footer is above the canvas */
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .footer-column {
+            flex: 1;
+            padding: 10px;
+            min-width: 200px; /* Ensure the columns don't get too narrow */
+        }
+
+        .footer-column h3 {
+            margin-top: 0;
+        }
+
+        .footer-column a {
+            color: #00aaff;
+            text-decoration: none;
+        }
+
+        .footer-column a:hover {
+            text-decoration: underline;
+        }
+
+        .styled-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .styled-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .styled-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .styled-section input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 80%;
+            margin-bottom: 20px;
+        }
+
+        .styled-section button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .styled-section button:hover {
+            background-color: #555;
+        }
+
+        .styled-section p {
+            margin-top: 20px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <canvas id="stars"></canvas> <!-- Canvas for the moving stars background -->
+        <header>
+            <!--top nav-->
+            <div class="top-nav">
+                <button id="menu-btn" class="menu-icon">&#9776;</button>
+                <nav class="right-nav">
+                    <a href="home.html">Home</a>
+                    <a href="scientist-details.html">Scientists</a>
+                    <a href="about-us.html">About Us</a>
+                </nav>
+                <div class="search-container">
+                    <input type="text" id="search-bar" placeholder="Search...">
+                    <button id="search-btn">Search</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <main>
+                <section id="section1" class="styled-section">
+                    <h2>Section 1</h2>
+                    <label for="node-id">Enter the Node ID:</label>
+                    <input type="text" id="node-id">
+                    <br><br>
+                    <label for="num-generations">Enter the Number of Generations:</label>
+                    <input type="text" id="num-generations">
+                    <button onclick="displayGraph()">Display Graph</button>
+                </section>
+                <section id="section2" class="styled-section">
+                    <h2>Statistics</h2>
+                    <p>The number of islands in the website is: <span id="num-islands"></span></p>
+                    <button onclick="displayIslandDetails()" , id="island-details">Display island details</button>
+                    <button onclick="hideIslandDetails()" style="display: none;" id="hide-button">Hide island details</button>
+                    <p>The average island length: <span id="average_length"></span></p>
+                    <p>The median island length: <span id="median_length"></span></p>
+                    <p>The network density of the overall genealogy graph : <span id="density"></span>  </p>
+                    <p>Number of nodes: <span id="nodes"></span></p>
+                    <p>Number of edges: <span id="edges"></span></p>
+                    <p>Island number with the greatest path  :  with starting node number : <span id="Top"></span></p>
+                    <p>Island number with shortest path:  with starting node number :  <span id="Lowest"></span> </p>
+                    <h3>Top 10 nodes by PageRank :</h3>
+                    <p>influence metrics to identify the most influential mathematicians.</p>
+                    <ul id="top-nodes"></ul>
+                    <button onclick="hi()">test</button>
+                    <div id="island-details"></div>
+                    <div id="graph"></div>
+                </section>
+            </main>
+        </div>
+
+        <!-- side nav sliding button -->
+        <nav id="side-nav" class="side-nav">
+            <a href="javascript:void(0)" class="close-btn" id="close-btn">&times;</a>
+            <a href="about-us.html">About Us</a>
+            <a href="FAQ.html">FAQ</a>
+            <a href="submit-data.html">Submit Data</a>
+            <a href="side-nav">Contact Us</a>
+        </nav>
+
+        <footer>
+            <div class="footer-container">
+                <div class="footer-column">
+                    <h3>About Us</h3>
+                    <a href="#">Read more</a>
+                </div>
+                <div class="footer-column">
+                    <h3>FAQ</h3>
+                    <a href="#">Read more</a>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <a href="#">Read more</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="home.js"></script>
+    <script src="stars.js"></script> <!-- JavaScript for the moving stars background -->
+    <script>
+        // Open side navigation
+        document.getElementById('menu-btn').addEventListener('click', function() {
+            document.getElementById('side-nav').style.width = '250px';
+        });
+
+        // Close side navigation
+        document.getElementById('close-btn').addEventListener('click', function() {
+            document.getElementById('side-nav').style.width = '0';
+        });
+
+        // JavaScript for the moving stars background
+        const canvas = document.getElementById('stars');
+        const context = canvas.getContext('2d');
+
+        let stars = [];
+
+        for (let i = 0; i < 100; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.5,
+                vx: Math.random() * 0.5 - 0.25,
+                vy: Math.random() * 0.5 - 0.25
+            });
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function updateStars() {
+            for (let star of stars) {
+                star.x += star.vx;
+                star.y += star.vy;
+
+                if (star.x < 0) star.x = canvas.width;
+                if (star.x > canvas.width) star.x = 0;
+                if (star.y < 0) star.y = canvas.height;
+                if (star.y > canvas.height) star.y = 0;
+            }
+        }
+
+        function drawStars() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let star of stars) {
+                context.beginPath();
+                context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                context.fillStyle = 'white';
+                context.fill();
+            }
+        }
+
+        function animateStars() {
+            updateStars();
+            drawStars();
+            requestAnimationFrame(animateStars);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        animateStars();
+
+        fetch('/num_islands.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('num-islands').textContent = data.num_islands || 'N/A';
+                document.getElementById('average_length').textContent = data.average_length || 'N/A';
+                document.getElementById('median_length').textContent = data.median_length || 'N/A';
+                document.getElementById('density').textContent = data.network_density || 'N/A';
+                document.getElementById('nodes').textContent = data.number_of_nodes || 'N/A';
+                document.getElementById('edges').textContent = data.number_of_edges || 'N/A';
+                document.getElementById('Top').textContent = data.longest_island_number || 'N/A';
+                document.getElementById('Lowest').textContent = data.shortest_island_number || 'N/A';
+
+                // Display Top 10 nodes by PageRank
+                const topNodesList = document.getElementById('top-nodes');
+                data.top_pagerank.forEach(node => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Node ${node[0]}: ${node[1]}`;
+                    topNodesList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching num_islands:', error));
+            function hi(){
+                            alert("hi");
+}
+            function displayIslandDetails() {
+            fetch('/num_islands.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const islandDetailsDiv = document.getElementById('island-details');
+                    islandDetailsDiv.innerHTML = ''; // Clear previous details
+                    data.islands_details.forEach(island => {
+                        const islandDetail = document.createElement('div');
+                        islandDetail.innerHTML = `
+                            <h3>Island ${island.island_number}</h3>
+                            <p>Nodes: ${island.nodes.join(', ')}</p>
+                            <p>Start Year: ${island.start_year}</p>
+                            <p>End Year: ${island.end_year}</p>
+                        `;
+                        islandDetailsDiv.appendChild(islandDetail);
+                    });
+                    document.getElementById('hide-button').style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching island details:', error));
+        }
+
+        function hideIslandDetails() {
+            const islandDetailsDiv = document.getElementById('island-details');
+            islandDetailsDiv.innerHTML = ''; // Clear details
+            document.getElementById('hide-button').style.display = 'none';
+        }
+        document.getElementById('bargraph-img').src = '/bargraph';
+        document.getElementById('scatterplot-img').src = '/scatter';
+    </script>
+</body>
+</html>

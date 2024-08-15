@@ -2,22 +2,33 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 class ScholarsRepo {
-   async getScholars() {
-    try {
-        return prisma.people2.findMany({
-            orderBy: { id: 'asc' }, 
-            take:100
-    });
-    } catch (error) {
-        return { error: error.message };
+    async getScholars() {
+        try {
+            return prisma.people2.findMany({
+                orderBy: { id: 'asc' },
+                take: 100
+            });
+        } catch (error) {
+            return { error: error.message };
+        }
     }
-}
     async getScholar(id) {
         try {
             return prisma.people2.findUnique({
                 where: {
                     id: parseInt(id)
                 }
+            })
+        } catch (error) {
+            return { error: error.message }
+        }
+    }
+    async getStudentNameById(id) {
+        try {
+            return prisma.people2.findUnique({
+                where: {
+                    id: parseInt(id)
+                }, select: { name: true }
             })
         } catch (error) {
             return { error: error.message }
@@ -46,7 +57,8 @@ class ScholarsRepo {
                     }
                 },
                 select: {
-                    country: true
+                    country: true,
+                    id: true
                 }
             });
         } catch (error) {

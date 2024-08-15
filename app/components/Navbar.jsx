@@ -6,13 +6,14 @@ const Navbar = () => {
       <div className="top-nav">
         <button id="menu-btn" className="menu-icon">&#9776;</button>
         <nav className="right-nav">
-          <Link href="/">Home</Link>
-          <Link href="/scientists">Scientists</Link>
-          <Link href="/about-us">About Us</Link>
+                       <Link href="/">Home</Link>;
+                        <Link href="/exterma">Scientists</Link>
+                        <Link href="/aboutus">About Us</Link>
+                        <Link href="/submit">Submit Scholar</Link>
         </nav>
         <div className="search-container">
           <input type="text" id="search-bar" placeholder="Search..." />
-          <button id="search-btn">Search</button>
+          {/* <button id="search-btn" onClick={handleSearch()}>Search</button> */}
         </div>
       </div>
     </header>

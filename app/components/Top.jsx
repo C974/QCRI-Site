@@ -163,7 +163,7 @@ import React, { useState } from 'react';
 import styles from 'D:/GItHub/QCRI-Site/QCRI-Site/app/page.module.css';
 import Link from 'next/link';
 
-export function Top({ onSearch }) {
+export function Top({ onSearch , handleStatisticsClick }) {
     const [searchValue1, setSearchValue1] = useState('');
     const [searchValue2, setSearchValue2] = useState('');
 
@@ -227,42 +227,76 @@ export function Top({ onSearch }) {
         }
     };
 
-    const handleSearchClick = async () => {
+
+    const handleSearchClick= async () => {
         try {
-            const fetchData = async (searchValue) => {
-                const scholarResponse = await fetch(`http://localhost:3000/api/scholar/scholarName/${searchValue}`);
-                const scholarData = await scholarResponse.json();
-                console.log('Scholar Data:', scholarData);
-
-                const country = scholarData.country || scholarData[0]?.country;
-                console.log('Country:', country);
-
-                if (!country) {
-                    console.error('Country not found in scholar data');
-                    return null;
-                }
-
-                const countryResponse = await fetch(`http://localhost:3000/api/country/${country}`);
-                const countryData = await countryResponse.json();
-                console.log('Country Data:', countryData);
-
-                const { latitude, longitude } = countryData;
-
-                return { latitude, longitude };
-            };
-
-            const point1 = await fetchData(searchValue1);
-            const point2 = await fetchData(searchValue2);
-
-            if (point1 && point2) {
-                const connectionType = await checkConnection(searchValue1, searchValue2);
-                console.log(`Connection type: ${connectionType}`);
-                onSearch([point1, point2, connectionType]);
+          const fetchData = async (searchValue) => {
+            const scholarResponse = await fetch(`http://localhost:3000/api/scholar/scholarName/${searchValue}`);
+            const scholarData = await scholarResponse.json();
+            const country = scholarData.country || scholarData[0]?.country;
+      
+            if (!country) {
+              console.error('Country not found in scholar data');
+              return null;
             }
+      
+            const countryResponse = await fetch(`http://localhost:3000/api/country/${country}`);
+            const countryData = await countryResponse.json();
+            const { latitude, longitude } = countryData;
+      
+            return { latitude, longitude, name: searchValue };  // Add the name property
+          };
+      
+          const point1 = await fetchData(searchValue1);
+          const point2 = await fetchData(searchValue2);
+      
+          if (point1 && point2) {
+            const connectionType = await checkConnection(searchValue1, searchValue2);
+            onSearch([point1, point2], connectionType);
+          }
         } catch (error) {
-            console.error('Error:', error);
+          console.error('Error:', error);
         }
-    };
+      };
+      
+
+
+    // const handleSearchClick = async () => {
+    //     try {
+    //         const fetchData = async (searchValue) => {
+    //             const scholarResponse = await fetch(`http://localhost:3000/api/scholar/scholarName/${searchValue}`);
+    //             const scholarData = await scholarResponse.json();
+    //             console.log('Scholar Data:', scholarData);
+
+    //             const country = scholarData.country || scholarData[0]?.country;
+    //             console.log('Country:', country);
+
+    //             if (!country) {
+    //                 console.error('Country not found in scholar data');
+    //                 return null;
+    //             }
+
+    //             const countryResponse = await fetch(`http://localhost:3000/api/country/${country}`);
+    //             const countryData = await countryResponse.json();
+    //             console.log('Country Data:', countryData);
+
+    //             const { latitude, longitude } = countryData;
+
+    //             return { latitude, longitude };
+    //         };
+
+    //         const point1 = await fetchData(searchValue1);
+    //         const point2 = await fetchData(searchValue2);
+
+    //         if (point1 && point2) {
+    //             const connectionType = await checkConnection(searchValue1, searchValue2);
+    //             console.log(`Connection type: ${connectionType}`);
+    //             onSearch([point1, point2, connectionType]);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //     }
+    // };
 
     return (
         <header>
@@ -271,8 +305,10 @@ export function Top({ onSearch }) {
                 <nav className={styles.rightNav}>
                     <div className='text'>
                         <a href="home.html">Home</a>
-                        <Link href="/scientists">Scientists</Link>
+                        <Link href="/exterma">Scientists</Link>
                         <Link href="/aboutus">About Us</Link>
+                        <Link href="/visuals/graph.html" onClick={handleStatisticsClick}>Statistics</Link>
+                        <Link href="/submit">Submit Scholar</Link>
                     </div>
                 </nav>
                 <div className={styles.searchContainer}>
